@@ -1,0 +1,78 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Home - Coffee Shop{% endblock %}
+
+{% block content %}
+<h1>Welcome to Our Coffee Shop</h1>
+<p>We produce premium coffee locally using the finest beans from international markets around the world.</p>
+
+<div style="background: #f9f9f9; padding: 1rem; border-radius: 8px; margin: 2rem 0;">
+    <h2>Our Concept</h2>
+    <p>We connect directly with international coffee suppliers and markets to source the highest quality coffee beans from around the globe. These beans are then roasted and processed locally in our shop to create fresh, artisan coffee products that maintain their authentic flavors while supporting local production.</p>
+</div>
+
+{% if low_stock_count > 0 %}
+<div style="background: #fff3cd; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+    <strong>⚠️ Inventory Alert:</strong> {{ low_stock_count }} item(s) need restocking from international suppliers.
+</div>
+{% endif %}
+
+<h2>Featured Products</h2>
+<div class="product-grid">
+    {% for product in products|slice:":6" %}
+    <div class="product-card">
+        <h3>{{ product.name }}</h3>
+        <p>{{ product.get_product_type_display }}</p>
+        {% if product.source_bean %}
+        <p style="font-size: 0.9rem; color: #666;">
+            Source: {{ product.source_bean.name }} from {{ product.source_bean.origin_country }}
+        </p>
+        {% endif %}
+        <p class="price">${{ product.price }}</p>
+        {% if product.is_available %}
+        <span class="badge badge-success">Available</span>
+        {% else %}
+        <span class="badge badge-danger">Out of Stock</span>
+        {% endif %}
+    </div>
+    {% empty %}
+    <p>No products available at the moment.</p>
+    {% endfor %}
+</div>
+
+<h2>Recent Orders</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Order #</th>
+            <th>Customer</th>
+            <th>Status</th>
+            <th>Amount</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in recent_orders %}
+        <tr>
+            <td>#{{ order.id }}</td>
+            <td>{{ order.customer.name|default:"Walk-in" }}</td>
+            <td>
+                {% if order.status == 'COMPLETED' %}
+                <span class="badge badge-success">{{ order.get_status_display }}</span>
+                {% elif order.status == 'CANCELLED' %}
+                <span class="badge badge-danger">{{ order.get_status_display }}</span>
+                {% else %}
+                <span class="badge badge-info">{{ order.get_status_display }}</span>
+                {% endif %}
+            </td>
+            <td>${{ order.total_amount }}</td>
+            <td>{{ order.order_date|date:"M d, Y H:i" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">No recent orders.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

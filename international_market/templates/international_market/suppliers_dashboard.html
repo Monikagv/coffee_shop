@@ -1,0 +1,109 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}International Market Dashboard - Coffee Shop{% endblock %}
+
+{% block content %}
+<h1>🌍 International Coffee Market Dashboard</h1>
+<p>Manage connections with global coffee suppliers and source the finest beans from around the world.</p>
+
+<div style="background: #e7f3ff; padding: 1rem; border-radius: 8px; margin: 2rem 0;">
+    <h2>About Our International Network</h2>
+    <p>We partner with coffee suppliers from major coffee-producing regions worldwide including Colombia, Ethiopia, Brazil, Vietnam, and many others. Our direct relationships ensure we get high-quality beans that we process locally to maintain freshness and support our community.</p>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin: 2rem 0;">
+    <div style="background: #f9f9f9; padding: 1.5rem; border-radius: 8px;">
+        <h3>Active Suppliers</h3>
+        <p style="font-size: 2rem; color: #6f4e37; font-weight: bold;">{{ suppliers.count }}</p>
+        <a href="{% url 'international_market:supplier_list' %}" style="color: #6f4e37;">View All Suppliers →</a>
+    </div>
+    
+    <div style="background: #f9f9f9; padding: 1.5rem; border-radius: 8px;">
+        <h3>Available Coffee Beans</h3>
+        <p style="font-size: 2rem; color: #6f4e37; font-weight: bold;">{{ suppliers.0.coffee_beans.count|default:"0" }}</p>
+        <a href="{% url 'international_market:coffeebean_list' %}" style="color: #6f4e37;">Browse Beans →</a>
+    </div>
+    
+    <div style="background: #f9f9f9; padding: 1.5rem; border-radius: 8px;">
+        <h3>Recent Import Orders</h3>
+        <p style="font-size: 2rem; color: #6f4e37; font-weight: bold;">{{ recent_orders.count }}</p>
+        <a href="{% url 'international_market:importorder_list' %}" style="color: #6f4e37;">View All Orders →</a>
+    </div>
+</div>
+
+<h2>Active International Suppliers</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Supplier Name</th>
+            <th>Country</th>
+            <th>Contact</th>
+            <th>Available Beans</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for supplier in suppliers %}
+        <tr>
+            <td><strong>{{ supplier.name }}</strong></td>
+            <td>{{ supplier.country }}</td>
+            <td>{{ supplier.contact_email }}</td>
+            <td>{{ supplier.coffee_beans.count }}</td>
+            <td>
+                {% if supplier.is_active %}
+                <span class="badge badge-success">Active</span>
+                {% else %}
+                <span class="badge badge-danger">Inactive</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">No suppliers found. Add suppliers through the admin panel.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2>Recent Import Orders</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Order #</th>
+            <th>Supplier</th>
+            <th>Coffee Bean</th>
+            <th>Quantity (kg)</th>
+            <th>Total Cost</th>
+            <th>Status</th>
+            <th>Order Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in recent_orders %}
+        <tr>
+            <td>#{{ order.id }}</td>
+            <td>{{ order.supplier.name }}</td>
+            <td>{{ order.coffee_bean.name }} ({{ order.coffee_bean.origin_country }})</td>
+            <td>{{ order.quantity_kg }}</td>
+            <td>${{ order.total_cost }}</td>
+            <td>
+                {% if order.status == 'DELIVERED' %}
+                <span class="badge badge-success">{{ order.get_status_display }}</span>
+                {% elif order.status == 'CANCELLED' %}
+                <span class="badge badge-danger">{{ order.get_status_display }}</span>
+                {% elif order.status == 'PENDING' %}
+                <span class="badge badge-warning">{{ order.get_status_display }}</span>
+                {% else %}
+                <span class="badge badge-info">{{ order.get_status_display }}</span>
+                {% endif %}
+            </td>
+            <td>{{ order.order_date|date:"M d, Y" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="7">No import orders yet.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

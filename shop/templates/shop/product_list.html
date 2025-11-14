@@ -1,0 +1,29 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Products - Coffee Shop{% endblock %}
+
+{% block content %}
+<h1>All Products</h1>
+
+<div class="product-grid">
+    {% for product in products %}
+    <div class="product-card">
+        <h3><a href="{% url 'shop:product_detail' product.pk %}" style="text-decoration: none; color: #4a2c2a;">{{ product.name }}</a></h3>
+        <p>{{ product.get_product_type_display }}</p>
+        {% if product.source_bean %}
+        <p style="font-size: 0.9rem; color: #666;">
+            From: {{ product.source_bean.origin_country }}
+        </p>
+        {% endif %}
+        <p class="price">${{ product.price }}</p>
+        {% if product.is_available %}
+        <span class="badge badge-success">Available</span>
+        {% else %}
+        <span class="badge badge-danger">Out of Stock</span>
+        {% endif %}
+    </div>
+    {% empty %}
+    <p>No products available.</p>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}{{ product.name }} - Coffee Shop{% endblock %}
+
+{% block content %}
+<h1>{{ product.name }}</h1>
+
+<div style="background: #f9f9f9; padding: 2rem; border-radius: 8px;">
+    <h2>Product Details</h2>
+    
+    <p><strong>Type:</strong> {{ product.get_product_type_display }}</p>
+    <p class="price">${{ product.price }}</p>
+    
+    {% if product.source_bean %}
+    <h3 style="margin-top: 2rem;">Coffee Bean Information</h3>
+    <p><strong>Bean Name:</strong> {{ product.source_bean.name }}</p>
+    <p><strong>Origin Country:</strong> {{ product.source_bean.origin_country }}</p>
+    <p><strong>Roast Level:</strong> {{ product.source_bean.get_roast_level_display }}</p>
+    <p><strong>Supplier:</strong> {{ product.source_bean.supplier.name }} ({{ product.source_bean.supplier.country }})</p>
+    {% if product.source_bean.description %}
+    <p><strong>Bean Description:</strong> {{ product.source_bean.description }}</p>
+    {% endif %}
+    {% endif %}
+    
+    {% if product.description %}
+    <h3 style="margin-top: 2rem;">Description</h3>
+    <p>{{ product.description }}</p>
+    {% endif %}
+    
+    <div style="margin-top: 2rem;">
+        {% if product.is_available %}
+        <span class="badge badge-success">Available Now</span>
+        {% else %}
+        <span class="badge badge-danger">Currently Unavailable</span>
+        {% endif %}
+    </div>
+</div>
+
+<div style="margin-top: 2rem;">
+    <a href="{% url 'shop:product_list' %}" style="color: #6f4e37;">&larr; Back to Products</a>
+</div>
+{% endblock %}
