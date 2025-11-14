@@ -1,0 +1,91 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Menu - Coffee Shop{% endblock %}
+
+{% block extra_css %}
+<style>
+    h1 {
+        color: #5D4037;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    .category-section {
+        margin-bottom: 3rem;
+    }
+    .category-section h2 {
+        color: #4E342E;
+        border-bottom: 2px solid #5D4037;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .menu-items {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+    .menu-item {
+        background: #f9f9f9;
+        padding: 1rem;
+        border-radius: 8px;
+        border-left: 4px solid #5D4037;
+    }
+    .menu-item h3 {
+        color: #5D4037;
+        margin-bottom: 0.5rem;
+    }
+    .menu-item .size {
+        color: #666;
+        font-size: 0.9rem;
+    }
+    .menu-item .price {
+        font-size: 1.3rem;
+        color: #4CAF50;
+        font-weight: bold;
+        margin-top: 0.5rem;
+    }
+    .menu-item .description {
+        color: #555;
+        font-size: 0.95rem;
+        margin-top: 0.5rem;
+    }
+    .no-items {
+        text-align: center;
+        color: #666;
+        font-style: italic;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>Our Coffee Menu</h1>
+
+{% if categories %}
+    {% for category in categories %}
+    <div class="category-section">
+        <h2>{{ category.name }}</h2>
+        {% if category.description %}
+        <p style="color: #666; margin-bottom: 1rem;">{{ category.description }}</p>
+        {% endif %}
+        
+        {% if category.coffees.all %}
+        <div class="menu-items">
+            {% for coffee in category.coffees.all %}
+            {% if coffee.is_available %}
+            <div class="menu-item">
+                <h3>{{ coffee.name }}</h3>
+                <div class="size">Size: {{ coffee.get_size_display }}</div>
+                <div class="price">${{ coffee.price }}</div>
+                <div class="description">{{ coffee.description|truncatewords:15 }}</div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="no-items">No items in this category yet.</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+{% else %}
+<p class="no-items">Menu coming soon! Please check back later.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,108 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Browse Coffees - Coffee Shop{% endblock %}
+
+{% block extra_css %}
+<style>
+    h1 {
+        color: #5D4037;
+        margin-bottom: 1.5rem;
+    }
+    .coffee-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+    .coffee-card {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 1.5rem;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .coffee-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    .coffee-card h2 {
+        color: #5D4037;
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    .coffee-card .category {
+        color: #666;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+    .coffee-card .price {
+        font-size: 1.5rem;
+        color: #4CAF50;
+        font-weight: bold;
+        margin: 1rem 0;
+    }
+    .coffee-card .description {
+        color: #555;
+        line-height: 1.5;
+        margin-bottom: 1rem;
+    }
+    .btn {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background-color: #5D4037;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+    .btn:hover {
+        background-color: #4E342E;
+    }
+    .pagination {
+        margin-top: 2rem;
+        text-align: center;
+    }
+    .pagination a {
+        color: #5D4037;
+        text-decoration: none;
+        padding: 0.5rem 1rem;
+        margin: 0 0.25rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>Browse Our Coffee Selection</h1>
+
+{% if coffees %}
+<div class="coffee-grid">
+    {% for coffee in coffees %}
+    <div class="coffee-card">
+        <h2>{{ coffee.name }}</h2>
+        <div class="category">{{ coffee.category.name }} - {{ coffee.get_size_display }}</div>
+        <div class="price">${{ coffee.price }}</div>
+        <div class="description">{{ coffee.description|truncatewords:20 }}</div>
+        <a href="{% url 'shop:coffee_detail' coffee.pk %}" class="btn">View Details</a>
+    </div>
+    {% endfor %}
+</div>
+
+{% if is_paginated %}
+<div class="pagination">
+    {% if page_obj.has_previous %}
+    <a href="?page=1">First</a>
+    <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+    {% endif %}
+    
+    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}">Next</a>
+    <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+    {% endif %}
+</div>
+{% endif %}
+{% else %}
+<p style="text-align: center; color: #666;">No coffees available at the moment.</p>
+{% endif %}
+{% endblock %}
