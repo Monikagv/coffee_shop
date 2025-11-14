@@ -1,0 +1,34 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Coffee Beans - International Market{% endblock %}
+
+{% block content %}
+<h1>Available Coffee Beans from International Suppliers</h1>
+
+<div class="product-grid">
+    {% for bean in coffee_beans %}
+    <div class="product-card">
+        <h3>{{ bean.name }}</h3>
+        <p><strong>Origin:</strong> {{ bean.origin_country }}</p>
+        <p><strong>Supplier:</strong> {{ bean.supplier.name }} ({{ bean.supplier.country }})</p>
+        <p><strong>Roast Level:</strong> {{ bean.get_roast_level_display }}</p>
+        {% if bean.description %}
+        <p style="font-size: 0.9rem; margin-top: 0.5rem;">{{ bean.description|truncatewords:20 }}</p>
+        {% endif %}
+        <p class="price">${{ bean.price_per_kg }}/kg</p>
+        <p><strong>Available:</strong> {{ bean.available_quantity_kg }}kg</p>
+        {% if bean.available_quantity_kg > 0 %}
+        <span class="badge badge-success">In Stock</span>
+        {% else %}
+        <span class="badge badge-danger">Out of Stock</span>
+        {% endif %}
+    </div>
+    {% empty %}
+    <p>No coffee beans available at the moment.</p>
+    {% endfor %}
+</div>
+
+<div style="margin-top: 2rem;">
+    <a href="{% url 'international_market:dashboard' %}" style="color: #6f4e37;">&larr; Back to Dashboard</a>
+</div>
+{% endblock %}

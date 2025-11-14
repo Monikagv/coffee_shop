@@ -1,0 +1,48 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Suppliers - International Market{% endblock %}
+
+{% block content %}
+<h1>International Coffee Suppliers</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Supplier Name</th>
+            <th>Country</th>
+            <th>Contact Email</th>
+            <th>Phone</th>
+            <th>Available Beans</th>
+            <th>Status</th>
+            <th>Joined</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for supplier in suppliers %}
+        <tr>
+            <td><strong>{{ supplier.name }}</strong></td>
+            <td>{{ supplier.country }}</td>
+            <td>{{ supplier.contact_email }}</td>
+            <td>{{ supplier.phone|default:"-" }}</td>
+            <td>{{ supplier.coffee_beans.count }}</td>
+            <td>
+                {% if supplier.is_active %}
+                <span class="badge badge-success">Active</span>
+                {% else %}
+                <span class="badge badge-danger">Inactive</span>
+                {% endif %}
+            </td>
+            <td>{{ supplier.created_at|date:"M Y" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="7">No active suppliers found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div style="margin-top: 2rem;">
+    <a href="{% url 'international_market:dashboard' %}" style="color: #6f4e37;">&larr; Back to Dashboard</a>
+</div>
+{% endblock %}

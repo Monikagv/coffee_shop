@@ -1,0 +1,35 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Menu - Coffee Shop{% endblock %}
+
+{% block content %}
+<h1>Our Menu</h1>
+<p>All our products are made from internationally sourced beans, locally roasted and prepared.</p>
+
+<div class="product-grid">
+    {% for product in products %}
+    <div class="product-card">
+        <h3>{{ product.name }}</h3>
+        <p><strong>Type:</strong> {{ product.get_product_type_display }}</p>
+        {% if product.source_bean %}
+        <p style="font-size: 0.9rem; color: #666;">
+            <strong>Origin:</strong> {{ product.source_bean.origin_country }}<br>
+            <strong>Bean:</strong> {{ product.source_bean.name }}<br>
+            <strong>Roast:</strong> {{ product.source_bean.get_roast_level_display }}
+        </p>
+        {% endif %}
+        {% if product.description %}
+        <p style="margin-top: 0.5rem;">{{ product.description }}</p>
+        {% endif %}
+        <p class="price">${{ product.price }}</p>
+        {% if product.is_available %}
+        <span class="badge badge-success">Available Now</span>
+        {% else %}
+        <span class="badge badge-danger">Currently Unavailable</span>
+        {% endif %}
+    </div>
+    {% empty %}
+    <p>Menu is being updated. Please check back soon!</p>
+    {% endfor %}
+</div>
+{% endblock %}
