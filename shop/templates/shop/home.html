@@ -1,0 +1,101 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Home - Coffee Shop{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero {
+        text-align: center;
+        padding: 3rem 0;
+        background: linear-gradient(135deg, #6D4C41 0%, #4E342E 100%);
+        color: white;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+    .hero h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+    .featured {
+        margin-top: 2rem;
+    }
+    .featured h2 {
+        color: #5D4037;
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+    .coffee-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-top: 1.5rem;
+    }
+    .coffee-card {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .coffee-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    .coffee-card h3 {
+        color: #5D4037;
+        margin-bottom: 0.5rem;
+    }
+    .coffee-card .price {
+        font-size: 1.5rem;
+        color: #4CAF50;
+        font-weight: bold;
+        margin: 0.5rem 0;
+    }
+    .coffee-card .category {
+        color: #666;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+    .btn {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        background-color: #5D4037;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-top: 1rem;
+        transition: background-color 0.3s;
+    }
+    .btn:hover {
+        background-color: #4E342E;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <h1>Welcome to Our Coffee Shop!</h1>
+    <p>Discover the finest coffee selection</p>
+    <a href="{% url 'shop:menu' %}" class="btn">View Full Menu</a>
+</div>
+
+<div class="featured">
+    <h2>Featured Coffees</h2>
+    {% if featured_coffees %}
+    <div class="coffee-grid">
+        {% for coffee in featured_coffees %}
+        <div class="coffee-card">
+            <h3>{{ coffee.name }}</h3>
+            <div class="category">{{ coffee.category.name }} - {{ coffee.get_size_display }}</div>
+            <p>{{ coffee.description|truncatewords:20 }}</p>
+            <div class="price">${{ coffee.price }}</div>
+            <a href="{% url 'shop:coffee_detail' coffee.pk %}" class="btn">View Details</a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p style="text-align: center; color: #666;">No coffees available at the moment. Please check back later!</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,115 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}{{ coffee.name }} - Coffee Shop{% endblock %}
+
+{% block extra_css %}
+<style>
+    .coffee-detail {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    h1 {
+        color: #5D4037;
+        margin-bottom: 1rem;
+    }
+    .coffee-info {
+        background: #f9f9f9;
+        padding: 2rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+    .coffee-meta {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+    }
+    .coffee-meta div {
+        display: flex;
+        flex-direction: column;
+    }
+    .coffee-meta label {
+        font-weight: bold;
+        color: #666;
+        font-size: 0.9rem;
+        margin-bottom: 0.25rem;
+    }
+    .coffee-meta span {
+        color: #333;
+        font-size: 1.1rem;
+    }
+    .price {
+        font-size: 2rem;
+        color: #4CAF50;
+        font-weight: bold;
+        margin: 1rem 0;
+    }
+    .description {
+        color: #555;
+        line-height: 1.8;
+        margin-top: 1.5rem;
+    }
+    .availability {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: bold;
+    }
+    .available {
+        background-color: #C8E6C9;
+        color: #2E7D32;
+    }
+    .unavailable {
+        background-color: #FFCDD2;
+        color: #C62828;
+    }
+    .btn {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        background-color: #5D4037;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-top: 1rem;
+        transition: background-color 0.3s;
+    }
+    .btn:hover {
+        background-color: #4E342E;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="coffee-detail">
+    <h1>{{ coffee.name }}</h1>
+    
+    <div class="coffee-info">
+        <div class="coffee-meta">
+            <div>
+                <label>Category:</label>
+                <span>{{ coffee.category.name }}</span>
+            </div>
+            <div>
+                <label>Size:</label>
+                <span>{{ coffee.get_size_display }}</span>
+            </div>
+            <div>
+                <label>Availability:</label>
+                <span class="availability {% if coffee.is_available %}available{% else %}unavailable{% endif %}">
+                    {% if coffee.is_available %}Available{% else %}Sold Out{% endif %}
+                </span>
+            </div>
+        </div>
+        
+        <div class="price">${{ coffee.price }}</div>
+        
+        <div class="description">
+            <h3>Description</h3>
+            <p>{{ coffee.description }}</p>
+        </div>
+    </div>
+    
+    <a href="{% url 'shop:coffee_list' %}" class="btn">← Back to Coffee List</a>
+</div>
+{% endblock %}
